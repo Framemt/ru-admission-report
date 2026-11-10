@@ -170,7 +170,7 @@ CREATE TABLE `login` (
 
 LOCK TABLES `login` WRITE;
 /*!40000 ALTER TABLE `login` DISABLE KEYS */;
-INSERT INTO `login` VALUES (1,'test-dev07@ru.ac.th','2569@Com!\r\n','local','2026-11-04 06:55:22'),(2,'scps2201@gmail.com','123456','local','2026-11-04 06:55:22'),(3,'test','123456','local','2026-11-04 06:55:22'),(9,'framemt221@gmail.com','123456','local','2026-11-10 07:15:11');
+INSERT INTO `login` VALUES (1,'test-dev07@ru.ac.th','2569@Com!\r\n','local','2026-11-04 06:55:22'),(2,'scps2201@gmail.com','123456','local','2026-11-04 06:55:22'),(3,'test','123456','local','2026-11-04 06:55:22');
 /*!40000 ALTER TABLE `login` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -288,4 +288,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-10 14:34:22
+-- Dump completed on 2026-11-10 14:45:01
