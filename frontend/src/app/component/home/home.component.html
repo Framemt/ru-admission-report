@@ -1,0 +1,199 @@
+<div class="container-fluid p-3 p-md-4">
+
+  <!-- Header Title & Live Status Bar -->
+  <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-4">
+    <div>
+      <h4 class="fw-bold text-dark mb-1">ภาพรวมระบบ (Overview)</h4>
+      <p class="text-muted small mb-0">ระบบรายงานรับสมัครนักศึกษาใหม่ ระดับปริญญาตรี มหาวิทยาลัยรามคำแหง</p>
+    </div>
+
+    <!-- Controls: Timestamp & Refresh Button -->
+    <div class="d-flex align-items-center gap-2">
+      <span *ngIf="lastUpdatedTime" class="text-muted small d-flex align-items-center gap-1 font-num">
+        <i class="bi bi-clock-history text-secondary"></i>
+        <span>อัปเดตล่าสุด {{ lastUpdatedTime }} น.</span>
+      </span>
+
+      <button 
+        type="button" 
+        (click)="loadData()" 
+        class="refresh-btn d-flex align-items-center justify-content-center border-0 rounded-circle shadow-xs"
+        [class.spinning]="isRefreshing"
+        title="คลิกเพื่อรีเฟรชข้อมูลและรันตัวเลขนับใหม่">
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- สรุปตัวเลขสถิติแบบมีลูกเล่น (Interactive KPI Cards 4 Cards Row) -->
+  <div class="row g-3 g-md-4 mb-4">
+    
+    <!-- 1. การ์ดยอดผู้สมัครรวม -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="interactive-kpi-card card-total h-100 p-3 p-xl-4 rounded-4 shadow-sm position-relative overflow-hidden">
+        <div class="shimmer-effect"></div>
+        <div class="d-flex align-items-start justify-content-between mb-3">
+          <div>
+            <span class="kpi-label text-uppercase fw-bold">ยอดผู้สมัครรวม</span>
+            <div class="extra-small text-muted mt-0.5">ทุกช่องทางทั่วประเทศ</div>
+          </div>
+          <div class="kpi-icon-wrap icon-total rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-people-fill"></i>
+          </div>
+        </div>
+
+        <div class="my-2">
+          <!-- ตัวเลขนับวิ่งแบบ Smooth Ease-out -->
+          <h2 class="kpi-number fw-bold mb-0 font-num text-dark">
+            {{ displayTotal | number }}
+            <span class="kpi-unit fw-normal text-muted">คน</span>
+          </h2>
+        </div>
+
+        <div class="kpi-footer d-flex align-items-center justify-content-between mt-3 pt-2.5 border-top">
+          <div class="extra-small text-muted d-flex align-items-center gap-1">
+            <i class="bi bi-clock-history"></i>
+            <span>ประจำภาคปัจจุบัน</span>
+          </div>
+          <span class="badge bg-primary-subtle text-primary extra-small rounded-pill px-2 font-num">100%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. การ์ดยอดชำระเงินแล้ว -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="interactive-kpi-card card-paid h-100 p-3 p-xl-4 rounded-4 shadow-sm position-relative overflow-hidden">
+        <div class="shimmer-effect"></div>
+        <div class="d-flex align-items-start justify-content-between mb-3">
+          <div>
+            <span class="kpi-label text-uppercase fw-bold text-success">ชำระเงินแล้ว</span>
+            <div class="extra-small text-muted mt-0.5">ยืนยันสิทธิ์เป็นนักศึกษา</div>
+          </div>
+          <div class="kpi-icon-wrap icon-paid rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-patch-check-fill"></i>
+          </div>
+        </div>
+
+        <div class="my-2">
+          <!-- ตัวเลขนับวิ่งแบบ Smooth Ease-out -->
+          <h2 class="kpi-number fw-bold mb-0 font-num text-dark">
+            {{ displayTotalPaid | number }}
+            <span class="kpi-unit fw-normal text-muted">คน</span>
+          </h2>
+        </div>
+
+        <div class="kpi-footer d-flex align-items-center justify-content-between mt-3 pt-2.5 border-top">
+          <div class="extra-small text-success fw-medium d-flex align-items-center gap-1">
+            <i class="bi bi-shield-check"></i>
+            <span>ออกรหัสแล้ว {{ (summary.totalStudentId || 0) | number }} คน</span>
+          </div>
+          <span class="badge bg-success-subtle text-success extra-small rounded-pill px-2 font-num">{{ paidPercent }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. การ์ดส่วนกลาง -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="interactive-kpi-card card-central h-100 p-3 p-xl-4 rounded-4 shadow-sm position-relative overflow-hidden">
+        <div class="shimmer-effect"></div>
+        <div class="d-flex align-items-start justify-content-between mb-3">
+          <div>
+            <span class="kpi-label text-uppercase fw-bold">ส่วนกลาง</span>
+            <div class="extra-small text-muted mt-0.5">หัวหมาก และ บางนา</div>
+          </div>
+          <div class="kpi-icon-wrap icon-central rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-buildings-fill"></i>
+          </div>
+        </div>
+
+        <div class="my-2">
+          <!-- ตัวเลขนับวิ่งแบบ Smooth Ease-out -->
+          <h2 class="kpi-number fw-bold mb-0 font-num text-dark">
+            {{ displayCentral | number }}
+            <span class="kpi-unit fw-normal text-muted">คน</span>
+          </h2>
+        </div>
+
+        <div class="kpi-footer d-flex align-items-center justify-content-between mt-3 pt-2.5 border-top">
+          <div class="extra-small text-muted">
+            ชำระแล้ว {{ (summary.centralPaid || 0) | number }} คน
+          </div>
+          <span class="badge bg-primary-subtle text-primary extra-small rounded-pill px-2 font-num">
+            {{ centralPercent }}%
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. การ์ดส่วนภูมิภาค -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="interactive-kpi-card card-regional h-100 p-3 p-xl-4 rounded-4 shadow-sm position-relative overflow-hidden">
+        <div class="shimmer-effect"></div>
+        <div class="d-flex align-items-start justify-content-between mb-3">
+          <div>
+            <span class="kpi-label text-uppercase fw-bold">ส่วนภูมิภาค</span>
+            <div class="extra-small text-muted mt-0.5">23 สาขาวิทยบริการฯ</div>
+          </div>
+          <div class="kpi-icon-wrap icon-regional rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+        </div>
+
+        <div class="my-2">
+          <!-- ตัวเลขนับวิ่งแบบ Smooth Ease-out -->
+          <h2 class="kpi-number fw-bold mb-0 font-num text-dark">
+            {{ displayRegional | number }}
+            <span class="kpi-unit fw-normal text-muted">คน</span>
+          </h2>
+        </div>
+
+        <div class="kpi-footer d-flex align-items-center justify-content-between mt-3 pt-2.5 border-top">
+          <div class="extra-small text-muted">
+            ชำระแล้ว {{ (summary.regionalPaid || 0) | number }} คน
+          </div>
+          <span class="badge bg-warning-subtle text-warning-emphasis extra-small rounded-pill px-2 font-num">
+            {{ regionalPercent }}%
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- แถบสัดส่วนมินิมอล (Visual Proportion Bar) -->
+  <div class="proportion-card p-3 rounded-4 bg-white shadow-xs border">
+    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 mb-2">
+      <span class="extra-small fw-bold text-secondary text-uppercase d-flex align-items-center gap-1.5">
+        <i class="bi bi-pie-chart-fill text-primary"></i>
+        <span>สัดส่วนผู้สมัคร (ส่วนกลาง / ส่วนภูมิภาค)</span>
+      </span>
+      <div class="d-flex flex-wrap align-items-center gap-2 gap-sm-3 extra-small">
+        <span class="d-flex align-items-center gap-1">
+          <span class="legend-dot bg-primary"></span>
+          <span>ส่วนกลาง: <strong class="font-num">{{ centralPercent }}%</strong></span>
+        </span>
+        <span class="d-flex align-items-center gap-1">
+          <span class="legend-dot bg-warning"></span>
+          <span>ส่วนภูมิภาค: <strong class="font-num">{{ regionalPercent }}%</strong></span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Dual Segment Progress Bar with Smooth Transitions -->
+    <div class="progress rounded-pill" style="height: 10px; background-color: #f1f5f9;">
+      <div 
+        class="progress-bar bg-primary progress-segment-transition" 
+        role="progressbar" 
+        [style.width.%]="centralPercent"
+        [title]="'ส่วนกลาง ' + centralPercent + '%'">
+      </div>
+      <div 
+        class="progress-bar bg-warning progress-segment-transition" 
+        role="progressbar" 
+        [style.width.%]="regionalPercent"
+        [title]="'ส่วนภูมิภาค ' + regionalPercent + '%'">
+      </div>
+    </div>
+  </div>
+
+</div>

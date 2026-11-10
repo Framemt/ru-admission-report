@@ -1,0 +1,82 @@
+<div class="interactive-term-picker d-flex align-items-center gap-1.5 p-1 bg-white border rounded-3 shadow-sm">
+  
+  <!-- Calendar Icon Badge with subtle glow -->
+  <div class="picker-icon d-flex align-items-center justify-content-center text-primary bg-primary bg-opacity-10 rounded-2">
+    <i class="bi bi-calendar3"></i>
+  </div>
+
+  <span class="small text-muted fw-semibold ps-1 d-none d-sm-inline">ปี/ภาค:</span>
+
+  <!-- ============================== -->
+  <!-- 1. Year Custom Dropdown -->
+  <!-- ============================== -->
+  <div class="dropdown-wrapper position-relative">
+    <button 
+      type="button" 
+      class="custom-dropdown-btn d-flex align-items-center gap-1.5 px-2.5 py-1 rounded-2 border-0 bg-transparent fw-bold text-dark"
+      [class.active]="isYearOpen"
+      (click)="toggleYear($event)"
+      title="คลิกเพื่อเลือกปีการศึกษา">
+      <span class="font-num">{{ internalYear }}</span>
+      <i class="bi bi-chevron-down chevron-icon" [class.rotated]="isYearOpen"></i>
+    </button>
+
+    <!-- Year Floating Menu Panel -->
+    <div class="dropdown-menu-panel shadow-lg rounded-3 p-1.5" *ngIf="isYearOpen" (click)="$event.stopPropagation()">
+      <div class="panel-header px-2 py-1 text-muted extra-small fw-semibold text-uppercase border-bottom mb-1">
+        เลือกปีการศึกษา
+      </div>
+      <div class="menu-items-list d-flex flex-column gap-1">
+        <button 
+          *ngFor="let y of years"
+          type="button" 
+          class="menu-option-btn w-100 d-flex align-items-center justify-content-between px-2.5 py-1.5 rounded-2 border-0 text-start"
+          [class.selected]="internalYear === y.val"
+          (click)="selectYear(y.val, $event)">
+          <div class="d-flex align-items-center gap-2">
+            <span class="font-num fw-semibold">{{ y.val }}</span>
+          </div>
+          <i *ngIf="internalYear === y.val" class="bi bi-check2 text-primary fw-bold fs-6"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <span class="text-muted fw-light px-0.5">/</span>
+
+  <!-- ============================== -->
+  <!-- 2. Semester Custom Dropdown -->
+  <!-- ============================== -->
+  <div class="dropdown-wrapper position-relative">
+    <button 
+      type="button" 
+      class="custom-dropdown-btn d-flex align-items-center gap-1.5 px-2.5 py-1 rounded-2 border-0 bg-transparent fw-bold text-dark"
+      [class.active]="isSemesterOpen"
+      (click)="toggleSemester($event)"
+      title="คลิกเพื่อเลือกภาคการศึกษา">
+      <span>{{ semesterLabel }}</span>
+      <i class="bi bi-chevron-down chevron-icon" [class.rotated]="isSemesterOpen"></i>
+    </button>
+
+    <!-- Semester Floating Menu Panel -->
+    <div class="dropdown-menu-panel shadow-lg rounded-3 p-1.5" *ngIf="isSemesterOpen" (click)="$event.stopPropagation()">
+      <div class="panel-header px-2 py-1 text-muted extra-small fw-semibold text-uppercase border-bottom mb-1">
+        เลือกภาคการศึกษา
+      </div>
+      <div class="menu-items-list d-flex flex-column gap-1">
+        <button 
+          *ngFor="let sem of semesters"
+          type="button" 
+          class="menu-option-btn w-100 d-flex align-items-center justify-content-between px-2.5 py-1.5 rounded-2 border-0 text-start"
+          [class.selected]="internalSemester === sem.val"
+          (click)="selectSemester(sem.val, $event)">
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-medium">{{ sem.label }}</span>
+          </div>
+          <i *ngIf="internalSemester === sem.val" class="bi bi-check2 text-primary fw-bold fs-6"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

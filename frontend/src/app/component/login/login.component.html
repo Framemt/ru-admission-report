@@ -1,0 +1,326 @@
+<div class="auth-page-wrapper">
+
+  <!-- Main Animated Sliding Container (Inspired by CodeByGaurav) -->
+  <div class="auth-container shadow-lg" [class.active]="isRegisterMode">
+    
+    <!-- ========================================== -->
+    <!-- 1. SIGN UP (REGISTER) FORM CONTAINER      -->
+    <!-- ========================================== -->
+    <div class="form-container sign-up-container" [class.show-mobile]="isRegisterMode">
+      <div class="form-content">
+        <div class="login-form-inner">
+          
+          <!-- Header -->
+          <div class="text-center mb-3">
+            <div class="mx-auto mb-2 rounded-circle bg-white p-1.5 d-flex align-items-center justify-content-center shadow-xs" 
+                 style="width: 58px; height: 58px; border: 2px solid rgba(245, 158, 11, 0.45);">
+              <img src="logo.png" alt="โลโก้มหาวิทยาลัยรามคำแหง" class="w-100 h-100 object-fit-contain">
+            </div>
+            <h2 class="h6 fw-bold text-dark mb-1">มหาวิทยาลัยรามคำแหง</h2>
+            <p class="text-muted extra-small mb-1">ลงทะเบียนสมัครสมาชิกเข้าใช้งานระบบ</p>
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-2.5 py-0.5 font-monospace extra-small">
+              สมัครสมาชิกใหม่ (Register)
+            </span>
+          </div>
+
+          <!-- Register Form -->
+          <form (ngSubmit)="onRegister()">
+            
+            <!-- Error Message Banner -->
+            <div *ngIf="errorMessage && isRegisterMode" class="alert alert-danger py-1.5 px-2.5 small d-flex align-items-center gap-2 mb-2 rounded-3">
+              <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+              <span style="font-size: 12px;">{{ errorMessage }}</span>
+            </div>
+
+            <!-- Username / Email Input -->
+            <div class="mb-2">
+              <label class="form-label extra-small fw-semibold text-secondary mb-1">ชื่อผู้ใช้หรืออีเมล (Username / Email)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted border-end-0 py-1.5 px-2.5">
+                  <i class="bi bi-person-fill small"></i>
+                </span>
+                <input 
+                  type="text" 
+                  [(ngModel)]="regUsername" 
+                  name="regUsername"
+                  placeholder="กรุณากรอกชื่อผู้ใช้หรืออีเมล" 
+                  required
+                  class="form-control form-control-sm border-start-0 ps-0 bg-light shadow-none">
+              </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="mb-2">
+              <label class="form-label extra-small fw-semibold text-secondary mb-1">รหัสผ่าน (Password)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted border-end-0 py-1.5 px-2.5">
+                  <i class="bi bi-lock-fill small"></i>
+                </span>
+                <input 
+                  [type]="showRegPassword ? 'text' : 'password'" 
+                  [(ngModel)]="regPassword" 
+                  name="regPassword"
+                  placeholder="กำหนดรหัสผ่าน (อย่างน้อย 4 ตัวอักษร)" 
+                  required
+                  class="form-control form-control-sm border-start-0 border-end-0 ps-0 bg-light shadow-none">
+                <button 
+                  type="button" 
+                  (click)="showRegPassword = !showRegPassword"
+                  class="input-group-text bg-light text-muted border-start-0 shadow-none py-1.5 px-2.5">
+                  <i class="bi small" [ngClass]="showRegPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Confirm Password Input -->
+            <div class="mb-3">
+              <label class="form-label extra-small fw-semibold text-secondary mb-1">ยืนยันรหัสผ่าน (Confirm Password)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted border-end-0 py-1.5 px-2.5">
+                  <i class="bi bi-shield-check small"></i>
+                </span>
+                <input 
+                  [type]="showRegPassword ? 'text' : 'password'" 
+                  [(ngModel)]="regConfirmPassword" 
+                  name="regConfirmPassword"
+                  placeholder="กรอกรหัสผ่านซ้ำอีกครั้ง" 
+                  required
+                  class="form-control form-control-sm border-start-0 ps-0 bg-light shadow-none">
+              </div>
+            </div>
+
+            <!-- Submit Register Button -->
+            <button 
+              type="submit" 
+              [disabled]="isLoading"
+              class="btn btn-primary w-100 py-2 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2 rounded-3">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span>{{ isLoading ? 'กำลังลงทะเบียน...' : 'ยืนยันการสมัครสมาชิก' }}</span>
+              <i *ngIf="!isLoading" class="bi bi-check-lg text-warning"></i>
+            </button>
+
+            <!-- Mobile Switch Link (Visible only on mobile screens) -->
+            <div class="mobile-switch-link text-center mt-3 pt-2 border-top">
+              <span class="text-muted extra-small">มีบัญชีผู้ใช้งานอยู่แล้ว? </span>
+              <button 
+                type="button" 
+                (click)="toggleMode(false)" 
+                class="btn btn-link p-0 extra-small fw-bold text-primary text-decoration-none">
+                เข้าสู่ระบบ (Sign In)
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. SIGN IN (LOGIN) FORM CONTAINER         -->
+    <!-- ========================================== -->
+    <div class="form-container sign-in-container" [class.hide-mobile]="isRegisterMode">
+      <div class="form-content">
+        <div class="login-form-inner">
+          
+          <!-- Header -->
+          <div class="text-center mb-3">
+            <div class="mx-auto mb-2 rounded-circle bg-white p-1.5 d-flex align-items-center justify-content-center shadow-xs" 
+                 style="width: 58px; height: 58px; border: 2px solid rgba(245, 158, 11, 0.45);">
+              <img src="logo.png" alt="โลโก้มหาวิทยาลัยรามคำแหง" class="w-100 h-100 object-fit-contain">
+            </div>
+            <h2 class="h6 fw-bold text-dark mb-1">มหาวิทยาลัยรามคำแหง</h2>
+            <p class="text-muted extra-small mb-1">ระบบออกรายงานและแสดงผลข้อมูลรับสมัครนักศึกษาใหม่</p>
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-2.5 py-0.5 font-monospace extra-small">
+              ระดับปริญญาตรี (RU Admission)
+            </span>
+          </div>
+
+          <!-- Login Form -->
+          <form (ngSubmit)="onLogin()">
+            
+            <!-- Error Message Banner -->
+            <div *ngIf="errorMessage && !isRegisterMode" class="alert alert-danger py-1.5 px-2.5 small d-flex align-items-center gap-2 mb-2 rounded-3">
+              <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+              <span style="font-size: 12px;">{{ errorMessage }}</span>
+            </div>
+
+            <!-- Email / Username Input -->
+            <div class="mb-2">
+              <label class="form-label extra-small fw-semibold text-secondary mb-1">Email : @ru.ac.th</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted border-end-0 py-1.5 px-2.5">
+                  <i class="bi bi-person-fill small"></i>
+                </span>
+                <input 
+                  type="text" 
+                  [(ngModel)]="email" 
+                  name="email"
+                  placeholder="กรุณากรอกอีเมล" 
+                  required
+                  class="form-control form-control-sm border-start-0 ps-0 bg-light shadow-none">
+              </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label class="form-label extra-small fw-semibold text-secondary mb-0">Password</label>
+              </div>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted border-end-0 py-1.5 px-2.5">
+                  <i class="bi bi-lock-fill small"></i>
+                </span>
+                <input 
+                  [type]="showPassword ? 'text' : 'password'" 
+                  [(ngModel)]="password" 
+                  name="password"
+                  placeholder="กรุณากรอกรหัสผ่าน" 
+                  required
+                  class="form-control form-control-sm border-start-0 border-end-0 ps-0 bg-light shadow-none">
+                <button 
+                  type="button" 
+                  (click)="showPassword = !showPassword"
+                  class="input-group-text bg-light text-muted border-start-0 shadow-none py-1.5 px-2.5">
+                  <i class="bi small" [ngClass]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Login Button -->
+            <button 
+              type="submit" 
+              [disabled]="isLoading || isGoogleLoading"
+              class="btn btn-primary w-100 py-2 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2 rounded-3">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span>{{ isLoading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ' }}</span>
+              <i *ngIf="!isLoading" class="bi bi-arrow-right text-warning"></i>
+            </button>
+
+            <!-- Divider -->
+            <div class="d-flex align-items-center my-2">
+              <hr class="flex-grow-1 border-secondary border-opacity-25 my-0">
+              <span class="px-2 text-muted small text-uppercase" style="font-size: 10px;">หรือ</span>
+              <hr class="flex-grow-1 border-secondary border-opacity-25 my-0">
+            </div>
+
+            <!-- Google Sign-In Button -->
+            <button 
+              type="button" 
+              (click)="onGoogleLogin()" 
+              [disabled]="isLoading || isGoogleLoading"
+              class="btn btn-outline-secondary w-100 py-2 fw-semibold shadow-xs d-flex align-items-center justify-content-center gap-2 rounded-3 google-btn bg-white"
+              title="เข้าสู่ระบบด้วยบัญชี Google (Gmail)">
+              <!-- Google "G" SVG Icon -->
+              <svg *ngIf="!isGoogleLoading" width="16" height="16" viewBox="0 0 18 18">
+                <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.616z"/>
+                <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.347 2.825.957 4.039l3.007-2.332z"/>
+                <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z"/>
+              </svg>
+              <span *ngIf="isGoogleLoading" class="spinner-border spinner-border-sm text-primary" role="status"></span>
+              <span class="text-dark extra-small">{{ isGoogleLoading ? 'กำลังตรวจสอบ...' : 'เข้าสู่ระบบด้วย Google' }}</span>
+            </button>
+
+            <!-- Mobile Switch Link (Visible only on mobile screens) -->
+            <div class="mobile-switch-link text-center mt-3 pt-2 border-top">
+              <span class="text-muted extra-small">ยังไม่มีบัญชีผู้ใช้งาน? </span>
+              <button 
+                type="button" 
+                (click)="toggleMode(true)" 
+                class="btn btn-link p-0 extra-small fw-bold text-primary text-decoration-none">
+                สมัครสมาชิก (Register)
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. ANIMATED SLIDING OVERLAY CONTAINER     -->
+    <!-- ========================================== -->
+    <div class="toggle-container">
+      <div class="toggle">
+        
+        <!-- Left Overlay (Visible when Active / in Register Mode) -->
+        <div class="toggle-panel toggle-left">
+          <div class="overlay-badge-icon">
+            <i class="bi bi-mortarboard-fill text-warning fs-2"></i>
+          </div>
+          <h3>มีบัญชีอยู่แล้ว?</h3>
+          <p>เข้าสู่ระบบเพื่อเข้าถึงระบบออกรายงานและสถิตินักศึกษาใหม่ ม.รามคำแหง</p>
+          <button type="button" class="btn-slide-toggle" (click)="toggleMode(false)">
+            <i class="bi bi-box-arrow-in-right me-1"></i> เข้าสู่ระบบ (Sign In)
+          </button>
+        </div>
+
+        <!-- Right Overlay (Visible when Inactive / in Login Mode) -->
+        <div class="toggle-panel toggle-right">
+          <div class="overlay-badge-icon">
+            <i class="bi bi-person-plus-fill text-warning fs-2"></i>
+          </div>
+          <h3>ยินดีต้อนรับ!</h3>
+          <p>ยังไม่มีบัญชีผู้ใช้งานใช่หรือไม่? สมัครสมาชิกเพื่อเข้าสู่ระบบงานสารสนเทศ</p>
+          <button type="button" class="btn-slide-toggle" (click)="toggleMode(true)">
+            <i class="bi bi-pencil-square me-1"></i> สมัครสมาชิก (Sign Up)
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 4. UNAUTHORIZED MODAL (EXACT 100% AS USER) -->
+  <!-- ========================================== -->
+  <div *ngIf="showUnauthorizedModal" class="modal-backdrop-custom d-flex align-items-center justify-content-center p-3">
+    <div class="card register-card shadow-lg border-0 rounded-4 overflow-hidden" style="max-width: 440px;">
+      
+      <!-- Modal Header (Red / Alert Theme) -->
+      <div class="bg-danger bg-opacity-10 text-danger p-4 text-center border-bottom border-danger border-opacity-10">
+        <div class="mx-auto mb-2 rounded-circle bg-white p-2 d-flex align-items-center justify-content-center shadow-xs" 
+             style="width: 64px; height: 64px; border: 2px solid rgba(220, 53, 69, 0.3);">
+          <i class="bi bi-shield-slash-fill fs-1 text-danger"></i>
+        </div>
+        <h5 class="fw-bold mb-1 text-dark">ไม่มีสิทธิ์เข้าใช้งานระบบ</h5>
+        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill px-3 py-1 font-monospace extra-small">
+          Access Denied • Unauthorized
+        </span>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="card-body p-3 p-sm-4 text-center">
+        <p class="text-muted small mb-3">
+          ระบบตรวจสอบพบว่าบัญชี Google นี้ ยังไม่ได้รับสิทธิ์เข้าใช้งานระบบรายงานรับสมัคร ม.รามคำแหง
+        </p>
+
+        <!-- Unauthorized Account Card -->
+        <div class="bg-light p-2.5 rounded-3 border d-flex align-items-center justify-content-center gap-2 mb-3">
+          <i class="bi bi-envelope-x-fill text-danger fs-5"></i>
+          <span class="fw-bold text-dark font-monospace small">{{ unauthorizedEmail }}</span>
+        </div>
+
+        <div class="alert alert-warning py-2.5 px-3 small text-start d-flex gap-2 rounded-3 mb-4">
+          <i class="bi bi-info-circle-fill text-warning fs-5 flex-shrink-0"></i>
+          <div>
+            <strong>คำแนะนำ:</strong> บัญชีนี้ยังไม่มีรายชื่อในฐานข้อมูลของระบบ กรุณาติดต่อผู้ดูแลระบบ (Admin) เพื่อขอเปิดสิทธิ์เข้าใช้งาน
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button 
+          type="button" 
+          (click)="closeUnauthorizedModal()" 
+          class="btn btn-primary w-100 py-2.5 fw-bold rounded-3 shadow-sm">
+          <span>ตกลง / สลับบัญชีอื่น</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,327 @@
+// SCSS for Login & Register Sliding Card (CodeByGaurav Animation Style)
+
+.auth-page-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #071728 0%, #0d2a4a 50%, #143d6b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  position: relative;
+  overflow: visible;
+}
+
+// Main Double-Slider Container (Inspired by CodeByGaurav)
+.auth-container {
+  background-color: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  width: 880px;
+  max-width: 100%;
+  min-height: 610px;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+
+  // Form Container Boxes
+  .form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease-in-out;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+
+    .form-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem 2.5rem;
+    }
+  }
+
+  // Inner form wrapper to keep fields well-proportioned
+  .login-form-inner {
+    max-width: 320px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  // 1. Sign In (Login) Box
+  .sign-in-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  // 2. Sign Up (Register) Box
+  .sign-up-container {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  // Active State (When user clicks Register -> slide left overlay to right)
+  &.active {
+    .sign-in-container {
+      transform: translateX(100%);
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .sign-up-container {
+      transform: translateX(100%);
+      opacity: 1;
+      z-index: 5;
+      pointer-events: auto;
+    }
+
+    .toggle-container {
+      transform: translateX(-100%);
+      border-radius: 0 160px 120px 0;
+    }
+
+    .toggle {
+      transform: translateX(50%);
+    }
+
+    .toggle-left {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .toggle-right {
+      transform: translateX(200%);
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  // 3. Sliding Overlay Container (Toggle)
+  .toggle-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), border-radius 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 160px 0 0 120px;
+    z-index: 1000;
+    will-change: transform, border-radius;
+    backface-visibility: hidden;
+  }
+
+  .toggle {
+    background: linear-gradient(135deg, #071728 0%, #0d2a4a 50%, #143d6b 100%);
+    color: #ffffff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .toggle-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 35px;
+    text-align: center;
+    top: 0;
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease-in-out;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+
+    .overlay-badge-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 2px solid rgba(245, 158, 11, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    h3 {
+      font-weight: 700;
+      font-size: 1.55rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.3px;
+    }
+
+    p {
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 1.5rem;
+      max-width: 290px;
+    }
+
+    .btn-slide-toggle {
+      border: 2px solid #f59e0b;
+      color: #ffffff;
+      background: transparent;
+      padding: 0.6rem 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 50rem;
+      letter-spacing: 0.5px;
+      transition: all 0.25s ease;
+
+      &:hover {
+        background: #f59e0b;
+        color: #071728;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35);
+      }
+    }
+  }
+
+  .toggle-left {
+    transform: translateX(-200%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .toggle-right {
+    right: 0;
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+// Fade in for SignUp Form during mid-animation
+@keyframes showSignUp {
+  0%, 49.99% {
+    opacity: 0;
+    z-index: 1;
+  }
+  50%, 100% {
+    opacity: 1;
+    z-index: 5;
+  }
+}
+
+// Hide Edge/IE native password reveal button so only custom button shows
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
+// Google Sign-In Button
+.google-btn {
+  border-color: #cbd5e1;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    background-color: #f8fafc !important;
+    border-color: #94a3b8 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Custom Modal Backdrop for Unauthorized / Google Alert
+.modal-backdrop-custom {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 23, 40, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 1060;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.register-card {
+  max-width: 440px;
+  width: 100%;
+  animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+// Responsive for Mobile / Small Screens (< 768px)
+@media (max-width: 768px) {
+  .auth-container {
+    width: 100%;
+    max-width: 440px;
+    min-height: auto;
+    border-radius: 20px;
+
+    .toggle-container {
+      display: none !important;
+    }
+
+    .form-container {
+      position: relative !important;
+      width: 100% !important;
+      left: 0 !important;
+      transform: none !important;
+
+      .form-content {
+        padding: 1.5rem 1.25rem !important;
+      }
+    }
+
+    .sign-in-container {
+      display: block;
+      &.hide-mobile {
+        display: none !important;
+      }
+    }
+
+    .sign-up-container {
+      display: none;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      &.show-mobile {
+        display: block !important;
+      }
+    }
+
+    .mobile-switch-link {
+      display: block !important;
+    }
+  }
+}
+
+// On Desktop, hide the simple mobile switch links
+@media (min-width: 769px) {
+  .mobile-switch-link {
+    display: none !important;
+  }
+}

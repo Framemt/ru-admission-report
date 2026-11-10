@@ -1,0 +1,95 @@
+// Styles for Root App Component
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+// ------------------------------------------
+// Mobile Topbar & Off-canvas Backdrop
+// ------------------------------------------
+.mobile-topbar {
+  height: 56px;
+  z-index: 1020;
+}
+
+.brand-icon-wrap-sm {
+  width: 32px;
+  height: 32px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu-btn {
+  width: 40px;
+  height: 40px;
+  transition: all 0.2s ease;
+  
+  &:active {
+    transform: scale(0.92);
+  }
+}
+
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 1040;
+  animation: backdropFadeIn 0.22s ease-out forwards;
+}
+
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// แถบวิ่งประมวลผลความคืบหน้าแบบมินิมอลเมื่อเปลี่ยนหน้า (YouTube/GitHub Style)
+.route-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+
+  &.active {
+    opacity: 1;
+
+    .progress-glow {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #f59e0b, #60a5fa);
+      background-size: 200% 100%;
+      animation: sweepGlow 1.2s infinite linear, growBar 0.35s ease-out forwards;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.7), 0 0 4px rgba(37, 99, 235, 0.9);
+    }
+  }
+}
+
+@keyframes sweepGlow {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes growBar {
+  0% {
+    width: 0%;
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    width: 95%;
+  }
+}

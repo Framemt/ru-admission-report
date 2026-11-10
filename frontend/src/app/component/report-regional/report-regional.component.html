@@ -1,0 +1,200 @@
+<div class="container-fluid p-3 p-md-4">
+
+  <!-- Header & Toolbar Card (ซ่อนเมื่อพิมพ์/ออก PDF) -->
+  <div class="card shadow-sm border-0 rounded-3 mb-4 p-3 d-print-none">
+    <div class="card-body p-2 d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+      <div>
+        <h1 class="h5 fw-bold text-dark mb-1">รายงานแยกสาขาวิชา "ส่วนภูมิภาค"</h1>
+        <p class="text-muted small mb-0">
+          รายงานจำนวนผู้สมัครเรียนระดับปริญญาตรี (สาขาวิทยบริการฯ 23 สาขา) • 
+          <span class="badge bg-primary bg-opacity-10 text-primary fw-bold">ประจำภาค {{ selectedSemester }} ปีการศึกษา {{ selectedYear }}</span>
+        </p>
+      </div>
+
+      <!-- Quick Switch Year/Semester & Export Buttons -->
+      <div class="d-flex flex-wrap align-items-center gap-3">
+        <!-- Interactive Year/Semester Selector (มีลูกเล่นแอนิเมชัน) -->
+        <app-term-selector 
+          [selectedYear]="selectedYear" 
+          [selectedSemester]="selectedSemester"
+          (termChange)="onTermChange($event)">
+        </app-term-selector>
+
+        <!-- Export Buttons & Refresh -->
+        <button 
+          (click)="exportPdf()"
+          class="btn btn-danger btn-sm d-flex align-items-center gap-1.5 shadow-sm px-2 py-1.5 fw-semibold">
+          <i class="bi bi-file-earmark-pdf-fill"></i>
+          <span>บันทึกไฟล์ PDF</span>
+        </button>
+
+        <button 
+          (click)="exportExcel()"
+          class="btn btn-success btn-sm d-flex align-items-center gap-1.5 shadow-sm px-2 py-1.5 fw-semibold">
+          <i class="bi bi-file-earmark-excel-fill"></i>
+          <span>ส่งออก Excel</span>
+        </button>
+
+        <button 
+          type="button" 
+          (click)="onRefresh()" 
+          class="refresh-btn d-flex align-items-center justify-content-center border-0 rounded-circle shadow-xs"
+          [class.spinning]="isRefreshing"
+          title="คลิกเพื่อรีเฟรชข้อมูลและรันตัวเลขนับใหม่">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Chips (มีเอฟเฟกต์ Shimmer, Hover Lift และตัวเลขนับวิ่งเหมือนหน้าแรก) -->
+  <div class="row g-3 mb-4 d-print-none">
+    <div class="col-6 col-md-3">
+      <div class="interactive-kpi-card card-regional h-100 p-3 rounded-4 shadow-sm position-relative overflow-hidden bg-white">
+        <div class="shimmer-effect"></div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="kpi-icon-wrap icon-regional rounded-3 d-flex align-items-center justify-content-center p-2 fs-5">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <div>
+            <div class="text-muted small" style="font-size: 11px;">ยอดสมัครภูมิภาครวม</div>
+            <div class="h5 fw-bold text-dark mb-0 font-num">{{ displayGrandTotal | number }} <span class="small fw-normal text-muted">คน</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <div class="interactive-kpi-card card-paid h-100 p-3 rounded-4 shadow-sm position-relative overflow-hidden bg-white">
+        <div class="shimmer-effect"></div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="kpi-icon-wrap icon-paid rounded-3 d-flex align-items-center justify-content-center p-2 fs-5">
+            <i class="bi bi-check2-circle"></i>
+          </div>
+          <div>
+            <div class="text-muted small" style="font-size: 11px;">ยอดรวมนักศึกษาชำระเงิน</div>
+            <div class="h5 fw-bold text-success mb-0 font-num">{{ displayTotalPaid | number }} <span class="small fw-normal text-muted">คน</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <div class="interactive-kpi-card card-internet h-100 p-3 rounded-4 shadow-sm position-relative overflow-hidden bg-white">
+        <div class="shimmer-effect"></div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="kpi-icon-wrap icon-internet rounded-3 d-flex align-items-center justify-content-center p-2 fs-5">
+            <i class="bi bi-globe"></i>
+          </div>
+          <div>
+            <div class="text-muted small" style="font-size: 11px;">สมัครทาง Internet</div>
+            <div class="h5 fw-bold text-dark mb-0 font-num">{{ displayInternetPaid | number }} <span class="small fw-normal text-muted">คน</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <div class="interactive-kpi-card card-id h-100 p-3 rounded-4 shadow-sm position-relative overflow-hidden bg-white">
+        <div class="shimmer-effect"></div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="kpi-icon-wrap icon-id rounded-3 d-flex align-items-center justify-content-center p-2 fs-5">
+            <i class="bi bi-person-badge-fill"></i>
+          </div>
+          <div>
+            <div class="text-muted small" style="font-size: 11px;">ออกรหัสประจำตัวแล้ว</div>
+            <div class="h5 fw-bold text-dark mb-0 font-num">{{ displayStudentId | number }} <span class="small fw-normal text-muted">คน</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Container (Formal Report Table) -->
+  <div class="d-md-none text-muted extra-small mb-2 d-flex align-items-center gap-1.5 px-1 d-print-none">
+    <i class="bi bi-arrow-left-right text-primary"></i>
+    <span>แตะเลื่อนตารางแนวนอน เพื่อดูข้อมูลทุกคอลัมน์</span>
+  </div>
+  <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table formal-report-table align-middle mb-0" style="font-size: 14px;">
+        <thead>
+          <!-- Title row inside table header (ตรงตามรูปภาพตัวอย่าง) -->
+          <tr class="report-title-row">
+            <th colspan="7" class="text-center py-2 text-dark">
+              <div class="fw-bold" style="font-size: 16px; line-height: 1.4;">รายงานจำนวนผู้สมัครใหม่ระดับปริญญาตรี ส่วนภูมิภาค</div>
+              <div class="fw-bold" style="font-size: 14px; line-height: 1.4;">ประจำภาค {{ selectedSemester }} ปีการศึกษา {{ selectedYear }}</div>
+            </th>
+          </tr>
+          <tr class="text-center align-middle">
+            <th rowspan="2" colspan="2" class="text-center align-middle" style="min-width: 320px;">สาขาวิทยบริการฯ/ คณะ/ สาขาวิชา</th>
+            <th colspan="3" class="text-center align-middle">สมัครทาง Internet</th>
+            <th class="text-center align-middle" style="min-width: 100px;">สมัครด้วยตนเอง</th>
+            <th rowspan="2" class="col-total text-nowrap text-center align-middle" style="min-width: 100px; width: 100px;">
+              ยอดรวม<br>นักศึกษา<br>ชำระเงิน
+            </th>
+          </tr>
+          <tr class="text-center align-middle">
+            <th class="text-nowrap" style="width: 70px;">ยอดสมัคร</th>
+            <th class="text-nowrap" style="width: 70px;">ยอดชำระเงิน</th>
+            <th class="text-nowrap" style="width: 95px;">ยอดออก<br>รหัสแล้ว</th>
+            <th class="text-nowrap" style="width: 90px;">ยอดสมัคร</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngIf="reportList.length === 0">
+            <td colspan="7" class="text-center py-5 text-muted bg-white">
+              <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+              <span class="fw-semibold">ไม่พบข้อมูลรายงานในภาคการศึกษา {{ selectedSemester }} / {{ selectedYear }}</span>
+              <p class="small text-muted mb-0">ยังไม่มีข้อมูลการรับสมัครในระบบ หรืออยู่ระหว่างการนำเข้าข้อมูล</p>
+            </td>
+          </tr>
+
+          <ng-container *ngFor="let faculty of reportList">
+            <!-- แถวหัวข้อสาขาวิทยบริการฯ ประจำจังหวัด (แถบสีเทากึ่งกลาง) -->
+            <tr class="faculty-row">
+              <td colspan="2" class="text-center fw-bold ps-3">
+                <i class="bi bi-geo-alt-fill text-primary me-2 d-print-none"></i>
+                <span>{{ faculty.facultyName }}</span>
+              </td>
+              <td class="text-end font-num"><span class="double-underline">{{ faculty.totalApplicants }}</span></td>
+              <td class="text-end font-num"><span class="double-underline">{{ faculty.totalPaid }}</span></td>
+              <td class="text-end font-num"><span class="double-underline">{{ getFacultyStudentId(faculty) }}</span></td>
+              <td class="text-end font-num"><span class="double-underline">{{ getFacultyWalkin(faculty) }}</span></td>
+              <td class="text-end font-num col-total"><span class="double-underline">{{ faculty.totalPaid }}</span></td>
+            </tr>
+
+            <!-- แถวสาขาวิชาแยก คณะ (Col 1) และ สาขาวิชา (Col 2) -->
+            <tr *ngFor="let prog of faculty.programs" class="program-row">
+              <td class="ps-3 text-nowrap text-dark fw-medium" style="width: 160px;">{{ prog.faculty_dept || faculty.facultyName }}</td>
+              <td class="ps-3 text-dark">{{ prog.name }}</td>
+              <td class="text-end font-num">{{ prog.internet_applicants }}</td>
+              <td [ngClass]="prog.internet_paid ? 'text-end' : 'text-center'" class="font-num">{{ prog.internet_paid || '-' }}</td>
+              <td [ngClass]="prog.internet_student_id ? 'text-end' : 'text-center'" class="font-num">{{ prog.internet_student_id || '-' }}</td>
+              <td [ngClass]="prog.walkin_applicants ? 'text-end' : 'text-center'" class="font-num">{{ prog.walkin_applicants || '-' }}</td>
+              <td [ngClass]="prog.total_paid ? 'text-end' : 'text-center'" class="font-num col-total fw-semibold">{{ prog.total_paid || '-' }}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td colspan="2" class="ps-3 text-start fw-bold">รวมทั้งสิ้น</td>
+            <td class="text-end font-num"><span class="double-underline">{{ grandTotalInternet | number }}</span></td>
+            <td class="text-end font-num"><span class="double-underline">{{ grandTotalPaid | number }}</span></td>
+            <td class="text-end font-num"><span class="double-underline">{{ grandTotalStudentId | number }}</span></td>
+            <td class="text-end font-num"><span class="double-underline">{{ grandTotalWalkIn | number }}</span></td>
+            <td class="text-end font-num col-total"><span class="double-underline">{{ grandTotalPaid | number }}</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- วันที่อ้างอิง: ใช้ตำแหน่งและรูปแบบเดียวกับรายงานส่วนกลางทั้งหน้าจอและ PDF -->
+  <div class="d-flex justify-content-end text-dark small mt-2 pe-1 fw-medium" style="font-size: 13px;">
+    ข้อมูล ณ วันที่ {{ asOfDate }}
+  </div>
+
+</div>

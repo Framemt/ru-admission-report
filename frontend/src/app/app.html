@@ -1,0 +1,50 @@
+<!-- Fullscreen view for Login Page -->
+<div *ngIf="isLoginPage">
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Main Dashboard Layout with Sidebar -->
+<div *ngIf="!isLoginPage" class="d-flex flex-column flex-lg-row min-vh-100 bg-light text-dark position-relative">
+  <!-- Top Slim Route Loading Progress Bar (YouTube/GitHub Style) -->
+  <div class="route-progress-bar" [class.active]="isNavigating">
+    <div class="progress-glow"></div>
+  </div>
+
+  <!-- Mobile Top Navigation Bar (แสดงเฉพาะหน้าจอมือถือ/แท็บเล็ต d-lg-none และซ่อนเมื่อพิมพ์/PDF) -->
+  <header class="mobile-topbar d-print-none d-lg-none d-flex align-items-center justify-content-between px-3 py-2 bg-white border-bottom shadow-xs sticky-top">
+    <div class="d-flex align-items-center gap-2">
+      <button 
+        type="button" 
+        class="mobile-menu-btn btn btn-light border d-flex align-items-center justify-content-center p-2 rounded-3 text-primary"
+        (click)="isMobileMenuOpen = !isMobileMenuOpen"
+        aria-label="เมนูหลัก">
+        <i class="bi bi-list fs-5"></i>
+      </button>
+      <div class="d-flex align-items-center gap-2">
+        <div class="brand-icon-wrap-sm p-1">
+          <img src="logo.png" alt="Logo" class="w-100 h-100 object-fit-contain rounded-2">
+        </div>
+        <span class="fw-bold text-dark fs-6">RU Report</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Backdrop Overlay (แตะด้านนอกเพื่อปิดเมนู) -->
+  <div 
+    class="mobile-backdrop d-lg-none" 
+    *ngIf="isMobileMenuOpen"
+    (click)="isMobileMenuOpen = false">
+  </div>
+
+  <!-- Sidebar Component -->
+  <app-sidebar 
+    [isOpen]="true" 
+    [isMobileOpen]="isMobileMenuOpen"
+    (closeMobile)="isMobileMenuOpen = false">
+  </app-sidebar>
+
+  <!-- Main Page Content -->
+  <main class="flex-grow-1 overflow-auto min-w-0" style="overflow-x: hidden;">
+    <router-outlet></router-outlet>
+  </main>
+</div>

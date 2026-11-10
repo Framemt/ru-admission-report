@@ -1,0 +1,189 @@
+<aside class="sidebar d-flex flex-column" [class.sidebar-collapsed]="!isOpen" [class.mobile-open]="isMobileOpen">
+
+  <!-- Brand -->
+  <div class="sidebar-brand px-3 px-md-4 py-4 d-flex align-items-center gap-3">
+    <div class="brand-icon-wrap flex-shrink-0 p-1">
+      <img src="logo.png" alt="Logo" class="w-100 h-100 object-fit-contain rounded-2">
+    </div>
+    <div class="d-flex flex-column overflow-hidden brand-text-wrap" *ngIf="isOpen">
+      <span class="fw-bold text-white sidebar-brand-title text-truncate">RU Report</span>
+      <span class="text-white-50 extra-small text-truncate">ระบบรายงานการรับสมัคร</span>
+    </div>
+    <!-- ปุ่มปิดเมนูบนมือถือ -->
+    <button 
+      type="button" 
+      class="btn btn-sm text-white-50 d-lg-none ms-auto p-1 border-0"
+      (click)="closeMobile.emit()"
+      aria-label="ปิดเมนู">
+      <i class="bi bi-x-lg fs-5"></i>
+    </button>
+  </div>
+ 
+
+  <hr class="sidebar-divider mx-3 my-0">
+
+  <!-- User Info (Dynamic) -->
+  <div class="sidebar-user px-3 px-md-4 py-3 d-flex align-items-center gap-3">
+    <div class="user-avatar flex-shrink-0">
+      {{ userInitials }}
+    </div>
+    <div class="overflow-hidden flex-grow-1 user-text-wrap" *ngIf="isOpen">
+      <div class="text-white fw-semibold small text-truncate" [title]="currentUser">{{ currentUser }}</div>
+      <div class="d-flex align-items-center gap-1">
+        <span class="status-dot"></span>
+        <span class="text-white-50 extra-small">ออนไลน์</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sidebar-divider mx-3 my-0">
+
+  <!-- Navigation Menu -->
+  <nav class="sidebar-nav flex-grow-1 px-3 py-3">
+    <ul class="list-unstyled m-0 d-flex flex-column gap-2">
+
+      <!-- 1. หน้าแรก -->
+      <li>
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
+          (click)="closeMobile.emit()"
+          class="sidebar-nav-item w-100 d-flex align-items-center gap-3 text-decoration-none"
+          title="หน้าแรก"
+        >
+          <i class="bi bi-house-door nav-icon flex-shrink-0"></i>
+          <span class="nav-label" *ngIf="isOpen">หน้าแรก</span>
+        </a>
+      </li>
+
+      <!-- 2. รายงานรับสมัครนักศึกษาใหม่ ปริญญาตรี (Accordion Dropdown) -->
+      <li class="nav-accordion-item">
+        <button
+          type="button"
+          class="sidebar-nav-item w-100 d-flex align-items-center justify-content-between"
+          (click)="toggleAdmissionMenu()"
+          title="รายงานรับสมัครนักศึกษาใหม่ ปริญญาตรี"
+        >
+          <div class="d-flex align-items-center gap-3 overflow-hidden text-start">
+            <i class="bi bi-file-earmark-text nav-icon flex-shrink-0"></i>
+            <span class="nav-label line-height-sm" *ngIf="isOpen">รายงานรับสมัครนักศึกษาใหม่ ปริญญาตรี</span>
+          </div>
+          <i *ngIf="isOpen" class="bi nav-chevron ms-1 flex-shrink-0" [class.bi-chevron-up]="isAdmissionOpen" [class.bi-chevron-down]="!isAdmissionOpen"></i>
+        </button>
+
+        <!-- Submenu with smooth 2-way slide animation -->
+        <div class="submenu-collapse" [class.is-open]="isAdmissionOpen && isOpen">
+          <div class="submenu-inner">
+            <div class="submenu-container ps-3 mt-1">
+              <ul class="list-unstyled submenu-list m-0 d-flex flex-column gap-1">
+                <li>
+                  <a
+                    routerLink="/reports/central"
+                    routerLinkActive="active"
+                    (click)="closeMobile.emit()"
+                    class="sidebar-subnav-item w-100 d-flex align-items-center text-decoration-none"
+                    title="ข้อมูลส่วนกลาง"
+                  >
+                    <span class="subnav-label">ข้อมูลส่วนกลาง</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    routerLink="/reports/regional"
+                    routerLinkActive="active"
+                    (click)="closeMobile.emit()"
+                    class="sidebar-subnav-item w-100 d-flex align-items-center text-decoration-none"
+                    title="ข้อมูลส่วนภูมิภาค"
+                  >
+                    <span class="subnav-label">ข้อมูลส่วนภูมิภาค</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <!-- 3. สถิติรายวิชาตามจังหวัด (แยกเป็นเมนูหลักเดี่ยวๆ) -->
+      <li>
+        <a
+          routerLink="/reports/course-by-province"
+          routerLinkActive="active"
+          (click)="closeMobile.emit()"
+          class="sidebar-nav-item w-100 d-flex align-items-center gap-3 text-decoration-none"
+          title="สถิติรายวิชาตามจังหวัด"
+        >
+          <i class="bi bi-bar-chart-line nav-icon flex-shrink-0"></i>
+          <span class="nav-label" *ngIf="isOpen">สถิติรายวิชาตามจังหวัด</span>
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+
+  <!-- Logout Button -->
+  <div class="px-3 pb-4">
+    <hr class="sidebar-divider mx-0 mb-3">
+    <button
+      type="button"
+      (click)="openLogoutModal()"
+      class="sidebar-logout w-100 d-flex align-items-center gap-3 text-decoration-none text-start"
+      title="ออกจากระบบ"
+    >
+      <i class="bi bi-box-arrow-left nav-icon flex-shrink-0"></i>
+      <span class="nav-label" *ngIf="isOpen">ออกจากระบบ</span>
+    </button>
+  </div>
+
+</aside>
+
+<!-- Logout Confirmation Modal (วางนอก <aside> ให้ position: fixed คลุมเต็มทั้งหน้าจอ) -->
+<div 
+  class="logout-modal-backdrop d-flex align-items-center justify-content-center p-3" 
+  *ngIf="showLogoutModal"
+  [class.closing]="isClosingLogoutModal"
+  (click)="closeLogoutModal()">
+  
+  <div 
+    class="logout-modal-card bg-white rounded-4 shadow-lg p-4 text-center position-relative" 
+    [class.closing]="isClosingLogoutModal"
+    (click)="$event.stopPropagation()">
+    
+    <!-- Top Close (✕) Button -->
+    <button 
+      type="button" 
+      class="btn-close modal-close-btn position-absolute top-0 end-0 m-3" 
+      (click)="closeLogoutModal()"
+      aria-label="ปิด">
+    </button>
+
+    <!-- Icon Badge -->
+    <div class="logout-icon-bubble mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle">
+      <i class="bi bi-box-arrow-right text-danger fs-2"></i>
+    </div>
+
+    <!-- Title & Description -->
+    <h5 class="fw-bold text-dark mb-3">คุณต้องการออกจากระบบใช่หรือไม่?</h5>
+
+    <!-- Action Buttons -->
+    <div class="d-flex align-items-center justify-content-center gap-2">
+      <button 
+        type="button" 
+        class="btn btn-light modal-cancel-btn border px-4 py-2 rounded-3 fw-medium flex-fill d-flex align-items-center justify-content-center gap-2" 
+        (click)="closeLogoutModal()">
+        <i class="bi bi-x-lg me-1 fs-6"></i>
+        <span>ยกเลิก</span>
+      </button>
+
+      <button 
+        type="button" 
+        class="btn btn-danger modal-confirm-btn px-4 py-2 rounded-3 fw-medium flex-fill d-flex align-items-center justify-content-center gap-2 shadow-sm" 
+        (click)="confirmLogout()">
+        <i class="bi bi-box-arrow-right me-1 fs-6"></i>
+        <span>ออกจากระบบ</span>
+      </button>
+    </div>
+
+  </div>
+</div>

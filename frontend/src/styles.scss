@@ -1,0 +1,688 @@
+// 1. Google Fonts & TH SarabunPSK
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+@font-face {
+  font-family: 'TH SarabunPSK';
+  src: local('TH SarabunPSK'), local('THSarabunPSK'), local('TH Sarabun New'), local('THSarabunNew');
+}
+
+// 2. Bootstrap Icons
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+// 3. Custom RU Theme SCSS Variables (Override Bootstrap defaults)
+$primary: #0d2a4a;
+$secondary: #1a3a5c;
+$warning: #f59e0b;
+$font-family-base: 'Sarabun', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+// 4. Import Bootstrap SCSS
+@import "bootstrap/scss/bootstrap";
+
+// 5. Global Styles
+body {
+  font-family: $font-family-base;
+  background-color: #f8fafc;
+  color: #1e293b;
+  margin: 0;
+  padding: 0;
+}
+
+.font-num {
+  // The source reports use Arial for numerals, which is narrower than a
+  // monospaced face and keeps all six numeric columns aligned when printed.
+  font-family: Arial, Helvetica, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+// ขีดเส้นใต้ 2 เส้นใต้ตัวเลข (Accounting Double Underline)
+.double-underline {
+  display: inline-block;
+  border-bottom: 3px double #000000;
+  padding-bottom: 1px;
+  line-height: 1.15;
+}
+
+// คอลัมน์ยอดรวมชำระเงินสีเทาเดียวกับรายงานอ้างอิง
+.col-total {
+  background-color: #c0c0c0 !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+// Custom RU Utility Classes
+.bg-ru-dark {
+  background-color: #0d233a !important;
+}
+
+.bg-ru-navy {
+  background-color: #0d2a4a !important;
+}
+
+.bg-ru-accent {
+  background-color: #1a3a5c !important;
+}
+
+.text-ru-gold {
+  color: #f59e0b !important;
+}
+
+// Global Refresh Button
+.refresh-btn {
+  width: 32px;
+  height: 32px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    background: #f8fafc;
+    color: #0d2a4a;
+    border-color: #cbd5e1 !important;
+    transform: scale(1.08);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  i {
+    display: inline-block !important;
+    line-height: 1;
+    transform-origin: center center;
+  }
+
+  &.spinning i {
+    animation: spinRotateGlobal 0.75s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+}
+
+@keyframes spinRotateGlobal {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Custom Scrollbar
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+  &:hover {
+    background: #94a3b8;
+  }
+}
+
+// ==========================================
+// 6. Page Transitions & Entrance Animations
+// ==========================================
+app-home,
+app-report-central,
+app-report-regional,
+app-login {
+  display: block;
+  animation: pageFadeSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes pageFadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ==========================================
+// 7. Button Micro-interactions & Tactile Feedback
+// ==========================================
+.btn,
+.sidebar-nav-item,
+.sidebar-subnav-item,
+.sidebar-logout,
+.custom-dropdown-btn,
+.menu-option-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 0.2s ease,
+              background-color 0.2s ease,
+              color 0.2s ease,
+              border-color 0.2s ease !important;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  // เอฟเฟกต์ยุบตัวเมื่อกดคลิก (Tactile 3D Press Bounce)
+  &:active {
+    transform: scale(0.96) !important;
+    transition-duration: 0.05s !important;
+  }
+}
+
+// Hover Elevation สำหรับปุ่มการทำงาน
+.btn {
+  &:hover:not(:disabled) {
+    transform: translateY(-1.5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0) scale(0.96) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+  }
+}
+
+// แสงเงาสวยงามเฉพาะปุ่มแต่ละสี
+.btn-danger:hover:not(:disabled) {
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.32) !important;
+}
+
+.btn-success:hover:not(:disabled) {
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.32) !important;
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 4px 14px rgba(13, 110, 253, 0.32) !important;
+}
+
+// คลื่นน้ำกระจายจากจุดคลิก (Interactive Ripple Wave)
+.interactive-ripple-wave {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: rippleSpread 0.55s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+  background-color: rgba(255, 255, 255, 0.32);
+  pointer-events: none;
+  z-index: 10;
+}
+
+// คลื่นสีเข้มสำหรับปุ่มหรือการ์ดสีขาว/สีอ่อน
+.btn-light .interactive-ripple-wave,
+.btn-outline-secondary .interactive-ripple-wave,
+.custom-dropdown-btn .interactive-ripple-wave,
+.menu-option-btn .interactive-ripple-wave {
+  background-color: rgba(13, 42, 74, 0.12);
+}
+
+@keyframes rippleSpread {
+  0% {
+    transform: scale(0);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(3.5);
+    opacity: 0;
+  }
+}
+
+// Card Lift Interaction
+.card {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+}
+
+// ==========================================
+// Formal Report Table Styles (สีเทาทางการ #C0C0C0 ตามรูปตัวอย่าง)
+// ==========================================
+.formal-report-table {
+  border-collapse: collapse !important;
+  border: 1px solid #000000 !important;
+  width: 100% !important;
+  color: #000000 !important;
+  font-family: 'Sarabun', sans-serif !important;
+  font-size: 15px !important;
+  line-height: 1.18 !important;
+
+  th,
+  td {
+    border: 1px solid #000000 !important;
+    vertical-align: middle !important;
+  }
+
+  thead {
+    .report-title-row th {
+      background-color: #c0c0c0 !important;
+      color: #000000 !important;
+      border: 1px solid #000000 !important;
+      padding: 11px 10px !important;
+      font-weight: 500 !important;
+    }
+
+    tr th {
+      background-color: #c0c0c0 !important;
+      color: #000000 !important;
+      border: 1px solid #000000 !important;
+      font-weight: 500 !important;
+      padding: 7px 6px !important;
+      vertical-align: middle !important;
+      line-height: 1.3 !important;
+    }
+  }
+
+  // แถวชื่อคณะ (#C0C0C0 ตัวอักษรดำ เส้นดำชัดเจน)
+  .faculty-row {
+    background-color: #c0c0c0 !important;
+    color: #000000 !important;
+    font-weight: 500 !important;
+
+    td {
+      background-color: #c0c0c0 !important;
+      color: #000000 !important;
+      font-weight: 500 !important;
+      padding: 7px 8px !important;
+    }
+  }
+
+  // แถวสาขาวิชา (พื้นขาว เส้นตารางดำชัดเจนตามรูป)
+  .program-row {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+
+    &:hover {
+      background-color: #f4f4f5 !important;
+    }
+
+    td {
+      color: #000000 !important;
+      border: 1px solid #000000 !important;
+      background-color: #ffffff;
+      padding: 6px 8px !important;
+      
+      &.col-total {
+        background-color: #c0c0c0 !important;
+      }
+    }
+  }
+
+  // แถวสรุปยอดรวม (รวมทั้งสิ้น: #C0C0C0 พร้อมเส้นคู่)
+  tfoot tr {
+    background-color: #c0c0c0 !important;
+
+    td {
+      background-color: #c0c0c0 !important;
+      color: #000000 !important;
+      font-weight: 500 !important;
+      border: 1px solid #000000 !important;
+      border-top: 2px solid #000000 !important;
+      border-bottom: 3px double #000000 !important;
+      padding: 6px 8px !important;
+    }
+  }
+}
+
+// ==========================================
+// Mobile Phone & Tablet Responsive Styles (< 768px / < 992px)
+// ==========================================
+.table-responsive {
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 767.98px) {
+  .formal-report-table {
+    min-width: 620px !important;
+    font-size: 13px !important;
+
+    thead {
+      .report-title-row th {
+        padding: 8px 6px !important;
+        font-size: 13.5px !important;
+      }
+
+      tr th {
+        padding: 5px 4px !important;
+        font-size: 12px !important;
+      }
+    }
+
+    .faculty-row td {
+      padding: 5px 6px !important;
+      font-size: 13px !important;
+    }
+
+    .program-row td {
+      padding: 4px 6px !important;
+      font-size: 12.5px !important;
+    }
+
+    tfoot tr td {
+      padding: 5px 6px !important;
+      font-size: 13px !important;
+    }
+  }
+
+  // ปรับการ์ดสรุปย่อยบนมือถือให้ขนาดตัวเลขพอดี
+  .card .h5 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container-fluid {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  // ปุ่มบนมือถือให้มีขนาดกดง่าย
+  .btn-sm {
+    padding: 0.4rem 0.65rem !important;
+    font-size: 0.8125rem !important;
+  }
+}
+
+// ==========================================
+// Official Document Print / PDF Styling
+// ==========================================
+@media print {
+  // Page setup (ตั้งค่าเป็นกระดาษ A4 แนวตั้งตามรายงานจริง)
+  @page {
+    size: A4 portrait;
+    margin: 1cm 0.7cm 1cm 0.7cm;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: 'TH SarabunPSK', 'TH Sarabun New', 'Sarabun', sans-serif !important;
+    font-size: 9pt !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  // ปลดล็อกตัวครอบ scroll ทั้งหมดเพื่อให้พิมพ์ต่อเนื่องครบทุกหน้า ไม่ถูกตัดตก
+  app-root,
+  main,
+  .table-responsive {
+    display: block !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    position: static !important;
+    float: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .min-vh-100 {
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .container-fluid {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .card:not(.d-print-none) {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  // ซ่อน UI ทุกชนิดที่ไม่เกี่ยวข้องกับรายงานกระดาษ พิมพ์เฉพาะตารางข้อมูลทางการ
+  .sidebar,
+  app-sidebar,
+  .mobile-topbar,
+  .mobile-backdrop,
+  header,
+  .route-progress-bar,
+  .d-print-none,
+  .no-print,
+  [class*="d-print-none"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .double-underline {
+    display: inline-block;
+    border-bottom: 3px double #000000 !important;
+    padding-bottom: 1px !important;
+    line-height: 1.15 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .col-total {
+    background-color: #c0c0c0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  // Official report table for printing (ตัวหนังสือขนาดกะทัดรัด คมชัดตามรูปตัวอย่างเดิม)
+  .formal-report-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    border: 1px solid #000000 !important;
+    font-family: 'TH SarabunPSK', 'TH Sarabun New', 'Sarabun', sans-serif !important;
+    font-size: 8.5pt !important;
+    margin: 0 !important;
+
+    th, td {
+      font-family: 'TH SarabunPSK', 'TH Sarabun New', 'Sarabun', sans-serif !important;
+      padding: 2.5px 3.5px !important;
+      line-height: 1.18 !important;
+      border: 1px solid #000000 !important;
+      min-width: 0 !important;
+    }
+
+    .text-nowrap {
+      white-space: normal !important;
+    }
+
+    thead {
+      display: table-header-group !important;
+
+      .report-title-row th {
+        background-color: #c0c0c0 !important;
+        color: #000000 !important;
+        border: 1px solid #000000 !important;
+        font-weight: bold !important;
+        font-size: 10.5pt !important;
+        padding: 5px 6px !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      tr th {
+        background-color: #c0c0c0 !important;
+        color: #000000 !important;
+        border: 1px solid #000000 !important;
+        font-weight: bold !important;
+        font-size: 8.5pt !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    tbody tr {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    .faculty-row {
+      background-color: #c0c0c0 !important;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+
+      td {
+        background-color: #c0c0c0 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+        font-size: 8.5pt !important;
+        border: 1px solid #000000 !important;
+      }
+    }
+
+    .program-row {
+      td {
+        color: #000000 !important;
+        border: 1px solid #000000 !important;
+        background-color: #ffffff !important;
+        font-size: 8.5pt !important;
+
+        &.col-total {
+          background-color: #c0c0c0 !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+      }
+    }
+
+    tfoot {
+      display: table-footer-group !important;
+
+      tr td {
+        background-color: #c0c0c0 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+        font-size: 8.5pt !important;
+        border: 1px solid #000000 !important;
+        border-top: 1.5px solid #000000 !important;
+        border-bottom: 3px double #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  }
+}
+
+// ==========================================
+// Interactive KPI Cards (Shimmer & Hover Effects)
+// ==========================================
+.interactive-kpi-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.25s ease, 
+              border-color 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08) !important;
+
+    .shimmer-effect {
+      transform: translateX(100%);
+    }
+
+    .kpi-icon-wrap {
+      transform: scale(1.12) rotate(5deg);
+    }
+  }
+
+  // Accent Top Lines on Cards
+  &.card-total {
+    border-top: 3px solid #1e3a8a;
+  }
+  &.card-paid {
+    border-top: 3px solid #16a34a;
+  }
+  &.card-internet {
+    border-top: 3px solid #0284c7;
+  }
+  &.card-id {
+    border-top: 3px solid #6366f1;
+  }
+  &.card-regional {
+    border-top: 3px solid #06b6d4;
+  }
+  &.card-central {
+    border-top: 3px solid #f59e0b;
+  }
+}
+
+// Shimmer Light Reflection passing across card
+.shimmer-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.75s ease;
+  pointer-events: none;
+}
+
+.kpi-icon-wrap {
+  width: 44px;
+  height: 44px;
+  font-size: 1.25rem;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &.icon-total {
+    background: rgba(30, 58, 138, 0.1);
+    color: #1e3a8a;
+  }
+  &.icon-paid {
+    background: rgba(22, 163, 74, 0.12);
+    color: #16a34a;
+  }
+  &.icon-internet {
+    background: rgba(2, 132, 199, 0.12);
+    color: #0284c7;
+  }
+  &.icon-id {
+    background: rgba(99, 102, 241, 0.12);
+    color: #6366f1;
+  }
+  &.icon-regional {
+    background: rgba(6, 182, 212, 0.12);
+    color: #0891b2;
+  }
+  &.icon-central {
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+  }
+}
+
+// Hide browser default password reveal button (Microsoft Edge / Chromium)
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
