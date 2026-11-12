@@ -1,7 +1,7 @@
 # RU Admission Report System (ระบบรายงานสถิติการรับสมัครนักศึกษาใหม่)
 มหาวิทยาลัยรามคำแหง (Ramkhamhaeng University)
 
-ระบบเว็บแอปพลิเคชันสำหรับแสดงรายงานและสถิติการรับสมัครนักศึกษาใหม่ (ระดับปริญญาตรี) ทั้งส่วนกลางและส่วนภูมิภาค พัฒนาด้วย Angular และ Node.js Express เชื่อมต่อฐานข้อมูล MySQL
+ระบบเว็บแอปพลิเคชันสำหรับแสดงรายงานและสถิติการรับสมัครนักศึกษาใหม่ (ระดับปริญญาตรี) ทั้งส่วนกลางและส่วนภูมิภาค พัฒนาด้วย Angular และ Node.js Express เชื่อมต่อฐานข้อมูล MySQL พร้อมระบบรักษาความปลอดภัยและการส่งออกข้อมูลรายงาน
 
 ---
 
@@ -21,9 +21,9 @@
 tes_sql/
 ├── backend/
 │   ├── config/          # การตั้งค่าการเชื่อมต่อฐานข้อมูล MySQL
-│   ├── middleware/      # JWT Authentication Middleware
+│   ├── middleware/      # ด่านตรวจ JWT Authentication Middleware
 │   ├── routes/          # API Routes (auth, reports)
-│   ├── database.sql     # โครงสร้างตารางและข้อมูลจำลองตัวเต็ม 8 ตาราง
+│   ├── database.sql     # โครงสร้างตารางและข้อมูลจริงตัวเต็ม 8 ตาราง
 │   ├── .env.example     # ไฟล์ตัวอย่างสำหรับการตั้งค่า Environment
 │   └── server.js        # Entry point ของ Backend API (Port 3000)
 │
@@ -31,9 +31,9 @@ tes_sql/
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── component/   # หน้าจอต่าง ๆ (Login, Home, รายงานส่วนกลาง, รายงานส่วนภูมิภาค, รายวิชาตามจังหวัด)
-│   │   │   ├── guards/      # AuthGuard / GuestGuard ตรวจสอบสิทธิ์การเข้าถึงหน้าเว็บ
+│   │   │   ├── guards/      # AuthGuard / GuestGuard ตรวจสอบสิทธิ์การเข้าถึงเส้นทาง
 │   │   │   ├── services/    # Data Services (Auth, Reports, Excel Export)
-│   │   │   └── interceptors/# แนบ Bearer Token ไปกับ HTTP Requests
+│   │   │   └── interceptors/# แนบ Bearer Token ไปกับ HTTP Request ทุกครั้งอัตโนมัติ
 │   │   └── styles.scss      # Global Theme และ Stylesheet
 │   └── package.json
 └── README.md
@@ -47,7 +47,7 @@ tes_sql/
 1. เปิดโปรแกรมจำลองเซิร์ฟเวอร์ เช่น **XAMPP / MySQL** หรือ **phpMyAdmin**
 2. นำเข้าฐานข้อมูล:
    - นำไฟล์ `backend/database.sql` ไป **Import** เข้า MySQL
-   *(ในไฟล์มีคำสั่งสร้างฐานข้อมูล `test_sql` และข้อมูลเริ่มต้นทั้ง 8 ตารางให้อัตโนมัติ)*
+   *(ในไฟล์มีคำสั่งสร้างฐานข้อมูล `test_sql` พร้อมโครงสร้างและข้อมูลจริงครบทั้ง 8 ตาราง)*
 
 ---
 
@@ -64,7 +64,7 @@ tes_sql/
    ```bash
    cp .env.example .env
    ```
-   *(ตรวจสอบค่าพอร์ตหรือรหัสผ่าน MySQL ในไฟล์ `.env` ให้ตรงกับเครื่องของท่าน)*
+   *(ตรวจสอบค่าพอร์ตหรือรหัสผ่าน MySQL ในไฟล์ `.env` ให้ตรงกับเครื่องของท่าน เช่น `DB_PASSWORD=`)*
 4. เริ่มต้นรันเซิร์ฟเวอร์ Backend:
    ```bash
    npm run dev
@@ -96,7 +96,7 @@ tes_sql/
 
 ## 🔐 บัญชีเข้าใช้งานระบบตัวอย่าง (Demo Accounts)
 
-สามารถใช้ข้อมูลด้านล่างนี้เพื่อเข้าสู่ระบบทดสอบ หรือล็อกอินผ่าน Google Sign-In:
+สามารถใช้ข้อมูลด้านล่างนี้เพื่อเข้าสู่ระบบทดสอบ หรือเข้าสู่ระบบผ่านบัญชี Google:
 
 | ชื่อผู้ใช้งาน (Username) | รหัสผ่าน (Password) | สิทธิ์ / บทบาท |
 |---|---|---|
@@ -106,11 +106,45 @@ tes_sql/
 
 ---
 
-## 📊 ฟีเจอร์หลักของระบบ
-- **Modern Authentication:** หน้าเข้าสู่ระบบและสมัครสมาชิกแบบ Double Sliding Card นุ่มนวล รองรับทั้งระบบรหัสผ่านและ Google One Tap
-- **Comprehensive Reports:** 
-  - รายงานสถิติการรับสมัครส่วนกลางแยกตามคณะ/สาขา
-  - รายงานสถิติการรับสมัครส่วนภูมิภาคแยกตามสาขาวิทยบริการฯ
-  - รายงานสถิติการลงทะเบียนรายวิชาตามรายจังหวัด
-- **Excel Export:** ส่งออกข้อมูลรายงานออกเป็นไฟล์ Excel ที่จัดรูปแบบคอลัมน์และหัวตารางตรงตามมาตรฐานงานสารสนเทศ
-- **Security:** ป้องกันเส้นทางด้วย JWT Bearer Token, Route Guards และ CORS Configuration
+## 🛡️ ระบบการยืนยันตัวตนและความปลอดภัย (Authentication & Security)
+
+- **Local Login (ระบบชื่อผู้ใช้/รหัสผ่าน):** ตรวจสอบรหัสผ่านกับฐานข้อมูล MySQL และออกรหัสความปลอดภัย **JWT (JSON Web Token)** ที่มีอายุการใช้งาน 8 ชั่วโมง
+- **Google Sign-In & One Tap:** รองรับการยืนยันตัวตนผ่าน Google Identity Services (GIS) โดยเมื่อเข้าสู่ระบบด้วย Google ระบบจะนำอีเมลไปตรวจสอบสิทธิ์กับฐานข้อมูล `test_sql` ก่อนทุกครั้ง
+  - **กรณีมีสิทธิ์:** ระบบจะออก Session Token ให้เข้าใช้งานหน้าจอรายงานได้ทันที
+  - **กรณีไม่มีสิทธิ์ (Unauthorized):** ระบบจะแสดงหน้าต่างแจ้งเตือน *Access Denied* พร้อมตัวเลือกลงทะเบียนขอเปิดสิทธิ์
+- **Route Guards & Interceptors:** 
+  - `authGuard`: ป้องกันผู้ใช้งานที่ยังไม่ได้เข้าสู่ระบบเข้าถึงหน้ารายงาน
+  - `guestGuard`: ป้องกันผู้ใช้งานที่เข้าสู่ระบบแล้วย้อนกลับไปหน้าล็อกอิน
+  - `authInterceptor`: แนบ `Authorization: Bearer <token>` ไปกับทุก API Request อัตโนมัติ
+
+---
+
+## 📡 สรุปรายการ Backend API Endpoints
+
+| Method | Endpoint | รายละเอียดการทำงาน | สิทธิ์การเข้าถึง |
+|---|---|---|---|
+| `POST` | `/api/login` | เข้าสู่ระบบด้วย Username & Password | ทุกคน (Public) |
+| `POST` | `/api/register` | สมัครสมาชิกใหม่เข้าสู่ระบบ | ทุกคน (Public) |
+| `POST` | `/api/auth/google-verify` | ตรวจสอบสิทธิ์บัญชี Google ใน MySQL | ทุกคน (Public) |
+| `POST` | `/api/auth/google-register` | ลงทะเบียนบัญชี Google เข้าสู่ MySQL | ทุกคน (Public) |
+| `GET` | `/api/terms` | ดึงรายการปีการศึกษาและภาคเรียนทั้งหมด | Bearer Token |
+| `GET` | `/api/summary` | ข้อมูลภาพรวมสถิตินักศึกษาหน้า Dashboard | Bearer Token |
+| `GET` | `/api/reports/central` | สถิติรายงานการรับสมัครนักศึกษาใหม่ (ส่วนกลาง) | Bearer Token |
+| `GET` | `/api/reports/regional` | สถิติรายงานการรับสมัครนักศึกษาใหม่ (ส่วนภูมิภาค) | Bearer Token |
+| `GET` | `/api/reports/course-by-province`| สถิติการลงทะเบียนรายวิชาจำแนกตามจังหวัด | Bearer Token |
+
+---
+
+## 📊 ฟีเจอร์หลักของระบบ (Key Features)
+
+1. **Modern Responsive Login:**
+   - ดีไซน์แบบ Double Sliding Animation สำหรับหน้าจอคอมพิวเตอร์
+   - ปรับเป็น Responsive Horizontal Slide นุ่มนวลสำหรับหน้าจอสมาร์ตโฟนและแท็บเล็ต
+2. **Academic Term Selector:**
+   - ระบบเลือกสลับดูข้อมูลย้อนหลังตามปีการศึกษาและภาคการศึกษา (เช่น ภาค 1/2569, ภาค 2/2569) ได้แบบ Real-time
+3. **Comprehensive Reports:** 
+   - รายงานสถิติการรับสมัครส่วนกลางแยกตามคณะและสาขาวิชา (168 สาขา)
+   - รายงานสถิติการรับสมัครส่วนภูมิภาคแยกตามสาขาวิทยบริการฯ ทั่วประเทศ
+   - รายงานสถิติการลงทะเบียนรายวิชาตามรายจังหวัด
+4. **Excel Export (จัดรูปแบบตรงตามมาตรฐาน):**
+   - ส่งออกข้อมูลเป็นไฟล์ Excel (.xlsx) ด้วย ExcelJS ที่มีหัวตาราง จัดสีพื้นหลัง และเส้นขอบถูกต้องตามรูปแบบรายงานทางการ
